@@ -9,9 +9,18 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system}; in
-      {
+      rec {
         packages.default = pkgs.callPackage ./. {};
-        # devShells.default =
+
+        devShells.default = with pkgs; mkShell {
+          packages = [
+            # libsForQt5.kpmcore
+            # calamares-nixos
+            packages.default.override { debug = true; }
+
+            glibcLocales
+          ];
+        };
       }
     );
 }

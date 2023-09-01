@@ -1,5 +1,14 @@
-{ stdenv, fetchFromGitHub, lib }:
+{ stdenv, fetchFromGitHub, lib, debug ? true, calamares-nixos }:
 
+if debug then
+calamares-nixos.overrideAttrs (final: prev: {
+  postInstall = ''
+    mkdir -p $out/share/calamares
+    cp -r ${./modules}/nixos  $out/lib/calamares/modules/nixos
+    cp -r ${./config}/* $out/share/calamares/
+    cp -r ${./branding/nixos} $out/share/calamares/branding/nixos
+  '';
+}) else
 stdenv.mkDerivation rec {
   pname = "calamares-ghaf-extensions";
   version = "0.3.12";
